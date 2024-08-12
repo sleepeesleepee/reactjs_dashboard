@@ -8,7 +8,6 @@ const Sidebar = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Set the active link based on the current path
     const currentPath = SIDEBAR_LINKS.findIndex(link => link.path === location.pathname);
     if (currentPath !== -1) {
       setActiveLink(currentPath);
@@ -29,32 +28,21 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-16 md:w-56 fixed left-0 top-0 z-10 h-screen border-r pt-8 px-2 md:px-4 bg-white flex flex-col overflow-y-auto">
-      {/* logo */}
+    <nav className="w-16 md:w-56 fixed left-0 top-0 z-10 h-screen border-r pt-8 px-2 md:px-4 bg-white flex flex-col overflow-y-auto">
       <div className="mb-8 flex justify-center items-center">
-        <picture className="hidden md:block">
-          <source srcSet="/logodesk.webp" type="image/webp" />
-          <img
-            src="/logodesk.png"
-            alt="logo"
-            className="w-28 md:w-40"
-            onError={handleImageError}
-          />
-        </picture>
-        <picture className="block md:hidden">
+        <picture>
+          <source srcSet="/logodesk.webp" type="image/webp" media="(min-width: 768px)" />
           <source srcSet="/logomob.webp" type="image/webp" />
           <img
-            src="/logomob.png"
-            alt="logo"
-            className="w-8"
+            src="/logodesk.png"
+            alt="Company Logo"
+            className="w-8 md:w-40"
             onError={handleImageError}
           />
         </picture>
         {imageLoadError && <p className="text-red-500 text-xs mt-2">Image failed to load</p>}
       </div>
-      {/* logo */}
 
-      {/* Navigation Links */}
       <ul className="mt-6 space-y-6 flex-grow">
         {SIDEBAR_LINKS.map((link, index) => (
           <li
@@ -67,22 +55,25 @@ const Sidebar = () => {
               to={link.path}
               className="flex justify-center md:justify-start items-center md:space-x-5 w-full h-full"
               onClick={() => setActiveLink(index)}
+              aria-label={link.name}
             >
-              {React.createElement(link.icon, { size: 24, className: "md:w-6 md:h-6" })}
-              <span className="text-xs md:text-sm text-gray-500 hidden md:inline">
+              {React.createElement(link.icon, { 
+                size: 24, 
+                className: "md:w-6 md:h-6",
+                "aria-hidden": "true"
+              })}
+              <span className="sr-only md:not-sr-only md:inline text-xs md:text-sm text-gray-500">
                 {link.name}
               </span>
             </Link>
           </li>
         ))}
       </ul>
-      {/* Navigation Links */}
 
-      {/* Built by Rsyx - only visible on desktop */}
       <div className="w-full px-2 md:px-4 py-2 text-center hidden md:block">
         <p className="text-xs text-gray-500">Built by Rsyx</p>
       </div>
-    </div>
+    </nav>
   );
 };
 
