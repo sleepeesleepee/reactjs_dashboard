@@ -1,50 +1,75 @@
-import React, { useState } from "react";
-
-// ICONS //
-import { LuBox, LuUser, LuMessageSquare, LuCalendar } from "react-icons/lu";
-import { FaSuitcase } from "react-icons/fa";
-import { TbUsers } from "react-icons/tb";
-import { Link } from "react-router-dom";
-// ICONS //
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Box, Gem, TrendingUp, Users, Crown, Clover } from "lucide-react";
 
 const Sidebar = () => {
   const [activeLink, setActiveLink] = useState(0);
-  const handleLinkClick = (index) => {
-    setActiveLink(index);
+  const [imageLoadError, setImageLoadError] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    // Set the active link based on the current path
+    const currentPath = SIDEBAR_LINKS.findIndex(link => link.path === location.pathname);
+    if (currentPath !== -1) {
+      setActiveLink(currentPath);
+    }
+  }, [location]);
+
+  const handleImageError = () => {
+    console.error("Error loading WebP image");
+    setImageLoadError(true);
   };
+
   const SIDEBAR_LINKS = [
-    { id: 1, path: "/", name: "Dashboard", icon: LuBox },
-    { id: 2, path: "/members", name: "Members", icon: TbUsers },
-    { id: 3, path: "/messages", name: "Messages", icon: LuMessageSquare },
-    { id: 4, path: "/projects", name: "Projects", icon: FaSuitcase },
-    { id: 5, path: "/clients", name: "Clients", icon: LuUser },
-    { id: 6, path: "/work", name: "Work Plan", icon: LuCalendar },
+    { id: 1, path: "/", name: "Home", icon: Crown },
+    { id: 2, path: "/luckydraw", name: "Lucky Draw Calculator", icon: Clover },
+    { id: 3, path: "/diamonddraw", name: "Diamond Draw Calculator", icon: Gem },
+    { id: 4, path: "/rankup", name: "Rank Up Calculator", icon: TrendingUp },
+    { id: 5, path: "/partners", name: "Partners Project", icon: Users },
   ];
+
   return (
-    <div className="w-16 md:w-56 fixed left-0 top-0 z-10 h-screen boder-r pt-8 px-4 bg-white">
+    <div className="w-16 md:w-56 fixed left-0 top-0 z-10 h-screen border-r pt-8 px-2 md:px-4 bg-white flex flex-col overflow-y-auto">
       {/* logo */}
-      <div className="mb-8">
-        <img src="/logo.svg" alt="logo" className="w-28 hidden md:flex" />
-        <img src="/logo_mini.svg" alt="logo" className="w-8 flex md:hidden" />
+      <div className="mb-8 flex justify-center items-center">
+        <picture className="hidden md:block">
+          <source srcSet="/logodesk.webp" type="image/webp" />
+          <img
+            src="/logodesk.png"
+            alt="logo"
+            className="w-28 md:w-40"
+            onError={handleImageError}
+          />
+        </picture>
+        <picture className="block md:hidden">
+          <source srcSet="/logomob.webp" type="image/webp" />
+          <img
+            src="/logomob.png"
+            alt="logo"
+            className="w-8"
+            onError={handleImageError}
+          />
+        </picture>
+        {imageLoadError && <p className="text-red-500 text-xs mt-2">Image failed to load</p>}
       </div>
       {/* logo */}
 
       {/* Navigation Links */}
-      <ul className="mt-6 space-y-6">
+      <ul className="mt-6 space-y-6 flex-grow">
         {SIDEBAR_LINKS.map((link, index) => (
           <li
-            key={index}
-            className={`font-medium rounded-md py-2 px-5 hover:bg-gray-100 hover:text-indigo-500 ${
+            key={link.id}
+            className={`font-medium rounded-md py-2 px-2 md:px-5 hover:bg-gray-100 hover:text-indigo-500 ${
               activeLink === index ? "bg-indigo-100 text-indigo-500" : ""
             }`}
           >
             <Link
               to={link.path}
-              className="flex justify-center md:justify-start items-center md:space-x-5"
-              onClick={() => handleLinkClick(index)}
+              className="flex justify-center md:justify-start items-center md:space-x-5 w-full h-full"
+              onClick={() => setActiveLink(index)}
             >
-              <span>{link.icon()}</span>
-              <span className="text-sm text-gray-500 hidden md:flex">
+              {React.createElement(link.icon, { size: 24, className: "md:w-6 md:h-6" })}
+              <span className="text-xs md:text-sm text-gray-500 hidden md:inline">
                 {link.name}
               </span>
             </Link>
@@ -53,11 +78,9 @@ const Sidebar = () => {
       </ul>
       {/* Navigation Links */}
 
-      <div className="w-full absolute bottom-5 left-0 px-4 py-2 cursor-pointer text-center">
-        <p className="flex items-center space-x-2 text-xs text-white py-2 px-5 bg-gradient-to-r from-indigo-500 to-violet-600 rounded-full">
-          {" "}
-          <span>?</span> <span className="hidden md:flex">Need Help</span>
-        </p>
+      {/* Built by Rsyx - only visible on desktop */}
+      <div className="w-full px-2 md:px-4 py-2 text-center hidden md:block">
+        <p className="text-xs text-gray-500">Built by Rsyx</p>
       </div>
     </div>
   );
