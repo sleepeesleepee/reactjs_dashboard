@@ -1,6 +1,6 @@
 import React from "react";
 
-const HeaderCard = ({ title, subtitle }) => {
+const H2Card = ({ title, content }) => {
   return (
     <div className="w-full bg-white rounded-xl p-4 md:p-6">
       <div className="flex justify-start">
@@ -9,7 +9,7 @@ const HeaderCard = ({ title, subtitle }) => {
             {title}
           </h2>
           <p className="text-base text-black-500 dark:text-black-400">
-            {subtitle}
+            {content}
           </p>
         </div>
       </div>
@@ -17,4 +17,4 @@ const HeaderCard = ({ title, subtitle }) => {
   );
 };
 
-export default HeaderCard;
+export default H2Card;
